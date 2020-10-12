@@ -1,0 +1,20 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+Cargo.lock
+
+# Optional npm cache directory
+.npm
+node_modules/
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+
+# Parcel related files
+dist/
+.cache/
+.parcel-cache/
