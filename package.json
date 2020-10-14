@@ -2,17 +2,37 @@
   "name": "treasury-web",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "dev": "parcel client/index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:parcel": "parcel client/index.html",
+    "dev:express": "node server/main.js",
+    "dev": "concurrently -k -i --names \" PARCEL  , EXPRESS \" \"npm run dev:parcel\" \"npm run dev:express\""
   },
   "author": "",
   "license": "ISC",
+  "targets": {
+    "app": {
+      "engines": {
+        "browsers": "> 0.25%"
+      },
+      "scopeHoist": true
+    }
+  },
   "dependencies": {
-    "material-ui": "^0.20.2",
-    "parcel": "^2.0.0-beta.1",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/styles": "^4.10.0",
+    "axios": "^0.20.0",
+    "express": "^4.17.1",
+    "notistack": "^1.0.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "swagger-jsdoc": "^4.3.0",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.1",
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.5"
   }
 }
