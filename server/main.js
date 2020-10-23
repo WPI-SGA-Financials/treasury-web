@@ -33,5 +33,6 @@ app.use('/api', require('./api'));
 // Start the server
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
+    console.log(`If running in development mode, use parcel server port instead`);
     console.log("Press Ctrl+C to quit.");
 });
