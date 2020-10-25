@@ -1,5 +1,24 @@
-var budgetModel = require('../models/budget')
+const credentials = require('../config/credentials')
+const budgetModel = require('../models/budget')
 var router = require('express').Router()
+
+
+// Function for when no parameters given
+function getAllBudgets() {
+    var JSON = {}
+    // TODO Grab all budgets from db as JSON objects
+        // Add each object to JSON variable, translate if necessary
+    return JSON
+}
+
+// Function for when parameters given
+function getBudgets(params) {
+    var JSON = {}
+    // TODO Grab all budgets from db as JSON objects (maybe sort by given params?)
+        // Add each object to JSON variable iff params match, translate if necessary
+        // What to do about meeting all params vs meeting any of the params?
+    return JSON
+}
 
 /**
  * @swagger
@@ -39,23 +58,6 @@ router.get('/budgets', (req, res) => {
     else JSON = getBudgets(req.params)
     res.send(JSON) // TODO may need to stringify
 })
-
-// Function for when no parameters given
-function getAllBudgets() {
-    var JSON = {}
-    // TODO Grab all budgets from db as JSON objects
-        // Add each object to JSON variable, translate if necessary
-    return JSON
-}
-
-// Function for when parameters given
-function getBudgets(params) {
-    var JSON = {}
-    // TODO Grab all budgets from db as JSON objects (maybe sort by given params?)
-        // Add each object to JSON variable iff params match, translate if necessary
-        // What to do about meeting all params vs meeting any of the params?
-    return JSON
-}
 
 // Export router object for use in API
 module.exports = router
