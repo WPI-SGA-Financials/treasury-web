@@ -1,6 +1,17 @@
-var router = require('express').Router();
+var express = require('express'),
+    router = express.Router()
 
-// Define namespaces
-router.use('/helloworld', require('./routes/helloworld'));
+// Functions to run on all API paths (if any)
+// TODO 
 
-module.exports = router;
+// Set up different routes
+router.use('/helloworld', require('./routes/helloworld'))
+router.use('/budgets', require('./routes/budgets'))
+router.use('/fundingRequests', require('./routes/fundingRequests'))
+router.use('/lineItems', require('./routes/lineItems'))
+router.use('/minutes', require('./routes/minutes'))
+router.use('/reallocations', require('./routes/reallocations'))
+router.use('/studentLifeFee', require('./routes/studentLifeFee'))
+
+// Export router for app to use
+module.exports = router
