@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const morgan = require('morgan');
 
 const options = {
     definition: {
@@ -18,6 +19,7 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(morgan('dev'));
 
 // Config
 const PORT = process.env.PORT || 8000;

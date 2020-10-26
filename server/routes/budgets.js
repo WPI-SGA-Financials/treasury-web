@@ -1,23 +1,31 @@
-const credentials = require('../config/credentials')
-const budgetModel = require('../models/budget')
+//var budgetModel = require('../models/budget')
+var connection = require('../config/db')
 var router = require('express').Router()
 
 
 // Function for when no parameters given
 function getAllBudgets() {
-    var JSON = {}
-    // TODO Grab all budgets from db as JSON objects
-        // Add each object to JSON variable, translate if necessary
-    return JSON
+    connection.connect()
+    var content = {}
+    
+    connection.query('SELECT * FROM Budgets', (err, results, fields) => {
+        if (err) console.error(err)
+        console.log('Raw Results:', results)
+        content = results
+    })
+
+    connection.end()
+    return content
 }
 
 // Function for when parameters given
 function getBudgets(params) {
-    var JSON = {}
+    var content = {}
     // TODO Grab all budgets from db as JSON objects (maybe sort by given params?)
-        // Add each object to JSON variable iff params match, translate if necessary
+        // Add each object to content variable iff params match, translate if necessary
         // What to do about meeting all params vs meeting any of the params?
-    return JSON
+        // TODO: Might need seperate file for parsing parameters into SQL queries
+    return content
 }
 
 /**
@@ -51,12 +59,12 @@ function getBudgets(params) {
  *         description: bad input parameter
  */
 router.get('/budgets', (req, res) => {
-    var JSON = {}
+    var content = {}
     if(Object.keys(req.params).length === 0) {
-        JSON = getAllBudgets()
+        content = getAllBudgets()
     }
-    else JSON = getBudgets(req.params)
-    res.send(JSON) // TODO may need to stringify
+    else content = getBudgets(req.params)
+    res.send(JSON.stringify(content))
 })
 
 // Export router object for use in API
