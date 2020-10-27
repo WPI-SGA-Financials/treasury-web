@@ -70,7 +70,7 @@ const Header = (props) => {
         </ListItem>
     ) : (
         <ListItem button color="inherit"
-                  onClick={() => {}}>
+                  onClick={() => {window.location.href = "/login"}}>
             <LockOpenIcon/>
             <ListItemText primary="WPI Sign In"></ListItemText>
         </ListItem>

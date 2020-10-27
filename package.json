@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev:parcel": "parcel client/index.html",
-    "dev:express": "node server/main.js",
+    "dev:express": "nodemon server/main.js",
     "dev": "concurrently -k -i --names \" PARCEL  , EXPRESS \" \"npm run dev:parcel\" \"npm run dev:express\""
   },
   "author": "",
@@ -26,6 +26,8 @@
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "notistack": "^1.0.1",
+    "passport": "^0.4.1",
+    "passport-azure-ad": "^4.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
