@@ -13,5 +13,19 @@ var connection = mysql.createConnection({
     database : process.env.DB_NAME,
 })
 
+// Function to send sql query through connection
+const sendQuery = function(sqlQuery) {
+    connection.connect()
+    connection.query(sqlQuery, (err, results, fields) => {
+        if (err) console.error(err)
+        console.log('Raw results:', results)
+        content = results
+    })
+    connection.end()
+    console.log(content)
+    console.log('Content above')
+    res.send(JSON.stringify(content))
+}
+
 // Export connection for use by API
 module.exports = connection

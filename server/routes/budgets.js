@@ -1,32 +1,7 @@
 //var budgetModel = require('../models/budget')
 var connection = require('../config/db')
+// var querystring = require('querystring')
 var router = require('express').Router()
-
-
-// Function for when no parameters given
-function getAllBudgets() {
-    connection.connect()
-    var content = {}
-    
-    connection.query('SELECT * FROM Budgets', (err, results, fields) => {
-        if (err) console.error(err)
-        console.log('Raw Results:', results)
-        content = results
-    })
-
-    connection.end()
-    return content
-}
-
-// Function for when parameters given
-function getBudgets(params) {
-    var content = {}
-    // TODO Grab all budgets from db as JSON objects (maybe sort by given params?)
-        // Add each object to content variable iff params match, translate if necessary
-        // What to do about meeting all params vs meeting any of the params?
-        // TODO: Might need seperate file for parsing parameters into SQL queries
-    return content
-}
 
 /**
  * @swagger
@@ -58,13 +33,29 @@ function getBudgets(params) {
  *       400:
  *         description: bad input parameter
  */
-router.get('/budgets', (req, res) => {
-    var content = {}
-    if(Object.keys(req.params).length === 0) {
-        content = getAllBudgets()
+router.get('/', (req, res) => {
+    var sqlQuery = 'SELECT * FROM Budgets'
+    var content
+
+    // Check for query
+    if(req.query) {
+        sqlQuery += ' WHERE'
+        var first = true
+        // Add each query param to sqlQuery string
+        for(const [key, value] of Object.entries(req.query)) {
+            if(!first) {sqlQuery += ' AND'}
+            sqlQuery += ' `' + key + '`="' + value + '"'
+        }
     }
-    else content = getBudgets(req.params)
-    res.send(JSON.stringify(content))
+
+    // Obtain data from db
+    connection.connect()
+    connection.query(sqlQuery, (err, results) => {
+        if (err) console.error(err)
+        content = results
+        connection.end()
+        res.send(content)
+    })    
 })
 
 // Export router object for use in API
