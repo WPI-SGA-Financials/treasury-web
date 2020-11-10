@@ -1,4 +1,3 @@
-//var budgetModel = require('../models/budget')
 var connection = require('../config/db')
 var router = require('express').Router()
 
