@@ -1,6 +1,5 @@
 //var budgetModel = require('../models/budget')
 var connection = require('../config/db')
-// var querystring = require('querystring')
 var router = require('express').Router()
 
 /**
@@ -38,22 +37,23 @@ router.get('/', (req, res) => {
     var content
 
     // Check for query
-    if(req.query) {
+    if(Object.entries(req.query).length != 0) {
         sqlQuery += ' WHERE'
         var first = true
         // Add each query param to sqlQuery string
         for(const [key, value] of Object.entries(req.query)) {
             if(!first) {sqlQuery += ' AND'}
             sqlQuery += ' `' + key + '`="' + value + '"'
+            first = false
         }
+        console.log('Finished:', sqlQuery)
     }
 
     // Obtain data from db
-    connection.connect()
     connection.query(sqlQuery, (err, results) => {
         if (err) console.error(err)
+        console.log('Sent:', sqlQuery)
         content = results
-        connection.end()
         res.send(content)
     })    
 })
