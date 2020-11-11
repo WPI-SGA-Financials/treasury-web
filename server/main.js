@@ -4,7 +4,9 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const morgan = require('morgan');
 const passport = require('passport');
-const azuread = require('passport-azure-ad');
+var AzureAdOAuth2Strategy  = require("passport-azure-ad-oauth2");
+const azuread = require("passport-azure-ad");
+const cors = require('cors');
 
 // Load DB and SSO Credentials
 const dotenv = require('dotenv')
@@ -46,7 +48,7 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(morgan('dev'));
-
+app.use(cors());
 // Config
 const PORT = process.env.PORT || 8000;
 
@@ -54,85 +56,50 @@ const PORT = process.env.PORT || 8000;
 app.use('/api', require('./api'));
 
 // OAUTH
-passport.use(new azuread.OIDCStrategy({
-  identityMetadata: 'https://login.microsoftonline.com/wpi.edu/.well-known/openid-configuration',
-  clientID: process.env.OAUTH_CLIENT_ID,
-  responseType: 'id_token code',
-  responseMode: 'form_post',
-  redirectUrl: 'http://localhost:1234/login/callback/',
-  allowHttpForRedirectUrl: true,
-  clientSecret: process.env.OAUTH_SECRET,
-  scope: ['profile', 'user.read'],
-},
-function(iss, sub, profile, accessToken, refreshToken, done) {
+app.use('/auth', require('./auth'));
+
+// Passport calls serializeUser and deserializeUser to
+// manage users
+passport.serializeUser(function(user, done) {
+  // Use the OID property of the user as a key
+  users[user.profile.oid] = user;
+  done (null, user.profile.oid);
+});
+
+passport.deserializeUser(function(id, done) {
+  done(null, users[id]);
+});
+
+async function signInComplete(iss, sub, profile, accessToken, refreshToken, params, done) {
   if (!profile.oid) {
-    return done(new Error("No oid found"), null);
+    return done(new Error("No OID found in user profile."));
   }
-  // asynchronous verification, for effect...
-  process.nextTick(function () {
-    console.log("find by oid")
-    findByOid(profile.oid, function(err, user) {
-      console.log("check err")
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        console.log("no usr")
-        // "Auto-registration"
-        users.push(profile);
-        return done(null, profile);
-      }
-      console.log("yes usr")
-      return done(null, user);
-    });
-  });
+
+  // Save the profile and tokens in user storage
+  // users[profile.oid] = { profile, accessToken };
+  return done(null, users[profile.oid]);
 }
+
+passport.use(new azuread.OIDCStrategy({
+  identityMetadata: 'https://login.microsoftonline.com/wpi.edu/v2.0/.well-known/openid-configuration',
+  clientID: process.env.OAUTH_CLIENT_ID,
+  responseType: 'code id_token',
+  responseMode: 'form_post',
+  redirectUrl: process.env.OAUTH_CALLBACK_URL,
+  allowHttpForRedirectUrl: process.env.OAUTH_CALLBACK_URL.includes("http://localhost"),
+  clientSecret: process.env.OAUTH_SECRET,
+  validateIssuer: false,
+  passReqToCallback: false,
+  scope: ['profile', 'user.read'],
+  useCookieInsteadOfSession: true,  // use cookie, not session
+  cookieEncryptionKeys: [ { key: '12345678901234567890123456789012', 'iv': '123456789012' }]
+},
+signInComplete
 ));
 
-
+// Init
 app.use(passport.initialize());
 app.use(passport.session());
-
-function regenerateSessionAfterAuthentication(req, res, next) {
-  var passportInstance = req.session.passport;
-  return req.session.regenerate(function (err){
-    if (err) {
-      return next(err);
-    }
-    req.session.passport = passportInstance;
-    return req.session.save(next);
-  });
-}
-
-app.post('/login',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
-  regenerateSessionAfterAuthentication,
-  function(req, res) { 
-    res.redirect('/');
-});
-
-app.get('/login', 
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }));
-
-app.post('/login/callback',
-  passport.authenticate('azuread-openidconnect', { failureRedirect: '/' }),
-  function(req, res) {
-    console.log('Login Success');
-    res.redirect('/');
-});
-
-app.get('/login/callback', 
-  passport.authenticate('azure_ad_oauth2', { failureRedirect: '/' }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    console.log('Auth success');
-    res.redirect('/');
-  });
-
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
 
 // Serve frontend
 // app.use("/", express.static("dist"));

@@ -5,10 +5,7 @@
   "/api-docs": {
     "target": "http://localhost:8000/"
   },
-  "/oauth": {
-    "target": "http://localhost:8000/"
-  },
-  "/login": {
+  "/auth": {
     "target": "http://localhost:8000/"
   },
 }

@@ -1,4 +1,4 @@
-var router = require('express').Router()
+let router = require('express').Router();
 
 // Functions to run on all API paths (if any)
 // TODO 
