@@ -30,7 +30,7 @@ app.use('/api', require('./api'));
 //TODO: oauth
 
 // Serve frontend
-// app.use("/", express.static("dist"));
+app.use("/", express.static("dist"));
 
 // Start the server
 app.listen(PORT, () => {

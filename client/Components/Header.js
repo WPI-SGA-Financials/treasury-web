@@ -9,7 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { withStyles } from '@material-ui/styles';
 import React, { useState, useEffect } from 'react';
 
-import genericUserPhoto from 'url:../Assets/generic-user.jpg';
+import genericUserPhoto from '../Assets/generic-user.jpg';
 
 
 const styles = theme => ({
@@ -70,7 +70,7 @@ const Header = (props) => {
         </ListItem>
     ) : (
         <ListItem button color="inherit"
-                  onClick={() => {}}>
+                  onClick={props.signIn}>
             <LockOpenIcon/>
             <ListItemText primary="WPI Sign In"></ListItemText>
         </ListItem>

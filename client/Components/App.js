@@ -16,7 +16,56 @@ import Header from './Header';
 
 import { ArrowUpwardSharp } from '@material-ui/icons';
 
+import { PublicClientApplication } from '@azure/msal-browser';
+import jwtDecode from 'jwt-decode';
 
+ 
+const msalApp = new PublicClientApplication({
+    auth: {
+        clientId: "b050c73f-fe32-4b29-a7c8-ee6a3af75dab",
+        authority: "https://login.microsoftonline.com/wpi.edu",
+        redirectUri: " https://63abdefcc2e4.ngrok.io",
+        navigateToLoginRequestUrl: true
+      },
+      cache: {
+        cacheLocation: "sessionStorage",
+        storeAuthStateInCookie: false,
+      },
+      system: {
+        loggerOptions: {
+            loggerCallback: (level, message, containsPii) => {
+                if (containsPii) {
+                    return;
+                }
+                console.log(message);
+            },
+            piiLoggingEnabled: false
+        },
+        windowHashTimeout: 60000,
+        iframeHashTimeout: 6000,
+        loadFrameTimeout: 0
+    }
+});
+
+const loginRequest = {
+    scopes: ["openid", "profile", "User.Read"],
+    // claims: "given_name family_name groups",
+    prompt: "select_account",
+    optionalClaims: {
+        "idToken": [
+            {
+                "name": "given_name",
+                "essential": false
+            }
+        ],
+        "accessToken": [
+            {
+                "name": "given_name",
+                "essential": false
+            }
+        ],
+    }
+};
 
 const theme = createMuiTheme({
     typography: {
@@ -71,6 +120,14 @@ const styles = theme => ({
     }
 });
 
+const signIn = () => {
+    msalApp.loginRedirect(loginRequest);
+    /*.then((u) => {
+        console.log(u);
+    }).catch(error => {
+        console.error(error);
+    });*/
+};
 
 const App = (props) => {
     const classes = props.classes;
@@ -82,11 +139,33 @@ const App = (props) => {
     const [value, setValue] = useState("Loading...");
 
     useEffect( () => {
+        const accounts = msalApp.getAllAccounts();
+        console.log(accounts);
+        msalApp.handleRedirectPromise().then((tokenResponse) => {
+            if(!tokenResponse) {
+                if(window.sessionStorage.getItem("session")) {
+                    tokenResponse = JSON.parse(window.sessionStorage.getItem("session"));
+                } else {
+                    return;
+                }
+            } else {
+                window.sessionStorage.setItem("session", JSON.stringify(tokenResponse));
+            }
+            let profile = jwtDecode(tokenResponse.idToken);
+            let access = jwtDecode(tokenResponse.accessToken);
+            console.log(profile);
+            console.log(access);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
+
+    useEffect( () => {
+        setRootClass(classes.root);
+        setAppClass(classes.shown);
       Axios.get("/api/helloworld/example").then( res => {
         console.log(res.data);
         setValue(new Date(res.data.time).toString());
-        setRootClass(classes.root);
-        setAppClass(classes.shown);
         setApp(true);
       }, err => {
         setValue("Error");
@@ -106,7 +185,7 @@ const App = (props) => {
                     <Router>
                         <MuiThemeProvider theme={theme}>
                             <SnackbarProvider maxSnack={1}>
-                                <Header user={user} />
+                                <Header user={user} signIn={signIn}/>
                                 {!user &&
                                     <h3 style={{marginLeft: 10, textAlign: 'left'}}>
                                         <ArrowUpwardSharp/><ArrowUpwardSharp/><ArrowUpwardSharp/>
