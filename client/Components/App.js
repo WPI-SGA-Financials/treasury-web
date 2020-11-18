@@ -24,7 +24,7 @@ const msalApp = new PublicClientApplication({
     auth: {
         clientId: "b050c73f-fe32-4b29-a7c8-ee6a3af75dab",
         authority: "https://login.microsoftonline.com/wpi.edu",
-        redirectUri: " https://63abdefcc2e4.ngrok.io",
+        redirectUri: " https://a95259ab3efd.ngrok.io",
         navigateToLoginRequestUrl: true
       },
       cache: {
@@ -49,7 +49,6 @@ const msalApp = new PublicClientApplication({
 
 const loginRequest = {
     scopes: ["openid", "profile", "User.Read"],
-    // claims: "given_name family_name groups",
     prompt: "select_account",
     optionalClaims: {
         "idToken": [
@@ -155,6 +154,7 @@ const App = (props) => {
             let access = jwtDecode(tokenResponse.accessToken);
             console.log(profile);
             console.log(access);
+            setUser(profile);
         }).catch((error) => {
             console.log(error);
         });
@@ -197,7 +197,10 @@ const App = (props) => {
                                     <Paper className={classes.paper} elevation={3}>
                                         <Switch>
                                             <Route exact path="/">
-                                              <h1>Hello! {value}</h1>  
+                                              <h1>Hello, {user.given_name}</h1> 
+                                              <h3>{user.email}</h3> 
+                                              {user.groups.map(grp => <p>{grp}</p>)}
+
                                             </Route>
                                         </Switch>
                                     </Paper>
