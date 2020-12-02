@@ -24,7 +24,7 @@ const msalApp = new PublicClientApplication({
     auth: {
         clientId: "b050c73f-fe32-4b29-a7c8-ee6a3af75dab",
         authority: "https://login.microsoftonline.com/wpi.edu",
-        redirectUri: " https://a95259ab3efd.ngrok.io",
+        redirectUri: " https://01957015c554.ngrok.io",
         navigateToLoginRequestUrl: true
       },
       cache: {
@@ -136,6 +136,7 @@ const App = (props) => {
     const [app, setApp] = useState(classes.hidden);
     const [user, setUser] = useState(undefined);
     const [value, setValue] = useState("Loading...");
+    const [photo, setPhoto] = useState(null);
 
     useEffect( () => {
         const accounts = msalApp.getAllAccounts();
@@ -161,14 +162,39 @@ const App = (props) => {
     }, []);
 
     useEffect( () => {
+        if(!user) {
+            return;
+        }
+        let accessToken = JSON.parse(window.sessionStorage.getItem("session"));
+        if(!accessToken) {
+            return;
+        } else {
+            accessToken = accessToken.accessToken;
+        }
+        Axios.get("https://graph.microsoft.com/v1.0/me/Photo/$value", {
+            headers: {
+                "Authorization": "Bearer " + accessToken,
+            },
+            responseType: 'blob'
+        }).then(resp => {
+            const url = window.URL || window.webkitURL;
+            const blobUrl = url.createObjectURL(resp.data);
+            setPhoto(blobUrl);
+        }).catch(err => {
+            console.error("Failed to get user photo");
+        })
+    }, [user]);
+
+    useEffect( () => {
         setRootClass(classes.root);
         setAppClass(classes.shown);
-      Axios.get("/api/helloworld/example").then( res => {
+      Axios.get("/api/budgets/").then( res => {
         console.log(res.data);
-        setValue(new Date(res.data.time).toString());
+        setValue(res.data);
         setApp(true);
       }, err => {
         setValue("Error");
+        setApp(true);
       })
     }, []);
   
@@ -185,7 +211,7 @@ const App = (props) => {
                     <Router>
                         <MuiThemeProvider theme={theme}>
                             <SnackbarProvider maxSnack={1}>
-                                <Header user={user} signIn={signIn}/>
+                                <Header user={user} photo={photo} signIn={signIn}/>
                                 {!user &&
                                     <h3 style={{marginLeft: 10, textAlign: 'left'}}>
                                         <ArrowUpwardSharp/><ArrowUpwardSharp/><ArrowUpwardSharp/>
@@ -193,18 +219,16 @@ const App = (props) => {
                                         Please sign in to continue
                                     </h3>
                                 }
-                                {user &&
+                                {user && (
                                     <Paper className={classes.paper} elevation={3}>
                                         <Switch>
                                             <Route exact path="/">
                                               <h1>Hello, {user.given_name}</h1> 
-                                              <h3>{user.email}</h3> 
-                                              {user.groups.map(grp => <p>{grp}</p>)}
-
+                                              {JSON.stringify(value)}
                                             </Route>
                                         </Switch>
                                     </Paper>
-                                }
+                                )}
                             </SnackbarProvider>
                         </MuiThemeProvider>
                     </Router>

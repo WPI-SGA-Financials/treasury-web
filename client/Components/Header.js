@@ -88,7 +88,7 @@ const Header = (props) => {
                 {/* User Detail */}
                 <Avatar
                     alt={ (user ? (user.name || "Unnamed User") : "No User") }
-                    src={ (user && user.displayPhoto) || genericUserPhoto }
+                    src={ (user && props.photo) || genericUserPhoto }
                     className={classes.bigAvatar}/>
                 <ListSubheader className={classes.avatarName}>
                     {user ? user.name : "Not Signed In"} 

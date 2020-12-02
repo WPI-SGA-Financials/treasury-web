@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev:parcel": "parcel client/index.html",
-    "dev:express": "node server/main.js",
+    "dev:express": "npx nodemon server/main.js",
     "dev": "concurrently -k -i --names \" PARCEL  , EXPRESS \" \"npm run dev:parcel\" \"npm run dev:express\""
   },
   "author": "",
