@@ -24,7 +24,7 @@ const msalApp = new PublicClientApplication({
     auth: {
         clientId: "b050c73f-fe32-4b29-a7c8-ee6a3af75dab",
         authority: "https://login.microsoftonline.com/wpi.edu",
-        redirectUri: " https://01957015c554.ngrok.io",
+        redirectUri: window.location.origin,
         navigateToLoginRequestUrl: true
       },
       cache: {
