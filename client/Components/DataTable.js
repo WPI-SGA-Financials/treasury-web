@@ -141,7 +141,7 @@ MuiVirtualizedTable.propTypes = {
 
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
-const DataTable = (props) {
+const DataTable = (props) => {
   const rows = props.data;
 
   return (

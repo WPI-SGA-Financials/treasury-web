@@ -9,7 +9,7 @@ import {
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, Typography } from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 
 import Header from './Header';
@@ -21,6 +21,9 @@ import jwtDecode from 'jwt-decode';
 
 import FilterableTable from 'react-filterable-table';
 import DataTable from "./DataTable";
+
+import appLogo from '../Assets/treasury-logo.png';
+
  
 const msalApp = new PublicClientApplication({
     auth: {
@@ -109,6 +112,13 @@ const styles = theme => ({
         marginRight: 'auto',
         padding: theme.spacing(3),
     },
+    loginPaper: {
+        maxWidth: 550,
+        margin: 'auto',
+        marginTop: 150,
+        marginBottom: 150,
+        padding: theme.spacing(3),
+    },
     shown: {
         opacity: 1.0,
         visibility: 'visible',
@@ -179,6 +189,8 @@ const App = (props) => {
             setPhoto(blobUrl);
         }).catch(err => {
             console.error("Failed to get user photo");
+            window.sessionStorage.removeItem("session");
+            window.location.reload();
         })
     }, [user]);
 
@@ -209,23 +221,25 @@ const App = (props) => {
                             <SnackbarProvider maxSnack={1}>
                                 <Header user={user} photo={photo} signIn={signIn}/>
                                 {!user &&
-                                    <h3 style={{marginLeft: 10, textAlign: 'left'}}>
-                                        <ArrowUpwardSharp/><ArrowUpwardSharp/><ArrowUpwardSharp/>
-                                        <br/>
-                                        Please sign in to continue
-                                    </h3>
+                                    <Paper className={classes.loginPaper} elevation={3}>
+                                        <img src={appLogo} style={{height: 40}} />
+                                        <Typography variant="h6">Welcome to WPI Treasury!</Typography>
+                                        <Typography align="left" variant="body1">Treasury provides access to detailed financials for student organizations on campus, and is restricted to active members of the WPI community. For aggregated statistics and visualizations on the student life fee and student organization budgets, visit <a href="https://sgaviz.cs.wpi.edu">sgaviz.cs.wpi.edu</a></Typography>
+                                        <br />
+                                        <Button variant="contained" color="primary" onClick={signIn}>Sign in with WPI Account</Button>
+                                    </Paper>
                                 }
                                 {user && (
                                     <Paper className={classes.paper} elevation={3}>
                                         <Switch>
                                             <Route exact path="/">
                                               <h1>Hello, {user.given_name}</h1> 
-                                              <DataTable fields={[
+                                              {/* <DataTable fields={[
                                                             { name: 'Name of Club', dataKey: "Name of Club", width: 400 },
                                                             { name: 'Fiscal Year', dataKey: "Fiscal Year", width: 100},
                                                             ]} 
                                                         data={value}
-                                                />
+                                                /> */}
                                             </Route>
                                         </Switch>
                                     </Paper>

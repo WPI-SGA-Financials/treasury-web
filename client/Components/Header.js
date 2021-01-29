@@ -42,7 +42,7 @@ const styles = theme => ({
     sticky: {
         position: 'sticky',
         top: 0
-    }
+    },
 });
 
 const Header = (props) => {
@@ -68,7 +68,10 @@ const Header = (props) => {
     
     let loginButton = user ? (
         <ListItem button color="inherit"
-                  onClick={() => {}}>
+                  onClick={() => {
+                    window.sessionStorage.removeItem("session");
+                    window.location.reload();
+                  }}>
             <ExitToAppIcon/>
             <ListItemText primary="Sign Out"></ListItemText>
         </ListItem>

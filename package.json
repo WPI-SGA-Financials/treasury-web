@@ -29,10 +29,11 @@
     "jwt-node": "^0.1.9",
     "mysql": "^2.18.1",
     "notistack": "^1.0.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-filterable-table": "^0.3.434",
     "react-router-dom": "^5.2.0",
+    "react-virtualized": "^9.22.3",
     "swagger-jsdoc": "^4.3.0",
     "swagger-ui-express": "^4.1.4"
   },

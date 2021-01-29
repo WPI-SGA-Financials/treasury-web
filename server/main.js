@@ -35,11 +35,11 @@ if(process.env.IS_DEV) {
     // If dev, use Parcel for HMR
     const Bundler = require('parcel-bundler');
     const bundler = new Bundler('client/index.html', {
-        hmr: true,
-        hmrPort: 4321,
+        hmr: false, // HMR does not work with HTTPS (thanks, MSAL)
     });
     staticHandler = bundler.middleware();
 
+    // We need a localtunnel for SSO to work, since MSAL uses PKCE which doesn't work via localhost
     console.log("Starting dev https tunnel...")
     const localtunnel = require('localtunnel');
 

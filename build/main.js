@@ -191,10 +191,11 @@ if (process.env.IS_DEV) {
   const Bundler = __webpack_require__(/*! parcel-bundler */ "parcel-bundler");
 
   const bundler = new Bundler('client/index.html', {
-    hmr: true,
-    hmrPort: 4321
+    hmr: false // HMR does not work with HTTPS (thanks, MSAL)
+
   });
-  staticHandler = bundler.middleware();
+  staticHandler = bundler.middleware(); // We need a localtunnel for SSO to work, since MSAL uses PKCE which doesn't work via localhost
+
   console.log("Starting dev https tunnel...");
 
   const localtunnel = __webpack_require__(/*! localtunnel */ "localtunnel");
