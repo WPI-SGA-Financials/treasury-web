@@ -10,9 +10,13 @@ import { withStyles } from '@material-ui/styles';
 import React, { useState, useEffect } from 'react';
 
 import genericUserPhoto from '../Assets/generic-user.jpg';
+import wpiLogo from '../Assets/wpi-logo.png';
 
 
 const styles = theme => ({
+    drawer: {
+        backgroundColor: "#34383B",
+    },
     appBar: {
         flexGrow: 1,
         textAlign: 'center',
@@ -78,7 +82,7 @@ const Header = (props) => {
     );
 
     return (
-        <div>
+        <div className={classes.root}>
             <Drawer className={classes.drawer} open={drawerOpen} onClose={toggleDrawer}>
                 {/* Close Button */}
                 <ListItem button onClick={toggleDrawer}>
@@ -134,6 +138,9 @@ const Header = (props) => {
                             </b>
                         </Typography>
                     </div>                        
+                    {/* <Typography variant="h5" align="right" color="inherit"> */}
+                    <img style={{height: 60, flexAlign: 'right', marginRight: '2.5vw'}} src={wpiLogo} />
+                    {/* </Typography> */}
                     {/* <HelpDialog
                         show={showHelp}
                         toggle={() => {setShowHelp(!showHelp)}}/> */}

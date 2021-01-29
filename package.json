@@ -31,6 +31,7 @@
     "notistack": "^1.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-filterable-table": "^0.3.434",
     "react-router-dom": "^5.2.0",
     "swagger-jsdoc": "^4.3.0",
     "swagger-ui-express": "^4.1.4"

@@ -19,12 +19,14 @@ import { ArrowUpwardSharp } from '@material-ui/icons';
 import { PublicClientApplication } from '@azure/msal-browser';
 import jwtDecode from 'jwt-decode';
 
+import FilterableTable from 'react-filterable-table';
+import DataTable from "./DataTable";
  
 const msalApp = new PublicClientApplication({
     auth: {
         clientId: "b050c73f-fe32-4b29-a7c8-ee6a3af75dab",
         authority: "https://login.microsoftonline.com/wpi.edu",
-        redirectUri: " https://01957015c554.ngrok.io",
+        redirectUri: "https://f06d0c5f7eba.ngrok.io",
         navigateToLoginRequestUrl: true
       },
       cache: {
@@ -73,10 +75,10 @@ const theme = createMuiTheme({
     palette: {
         type: 'dark',
         primary: {
-            main: '#00796B',
+            main: '#AC2B37',
         },
         secondary: {
-            main: '#009688',
+            main: '#751019',
         },
     },
 });
@@ -85,7 +87,7 @@ const theme = createMuiTheme({
 const styles = theme => ({
     root: {
         textAlign: 'center',
-        backgroundColor: '#303030',
+        // backgroundColor: '#303030',
         color: '#EEE',
         opacity: 1.0,
         visibility: 'visible',
@@ -95,7 +97,7 @@ const styles = theme => ({
         width: '100%',
         height: '100%',
         textAlign: 'center',
-        backgroundColor: '#303030',
+        // backgroundColor: '#303030',
         color: '#EEE',
         opacity: 0.0,
         visibility: 'hidden',
@@ -116,31 +118,28 @@ const styles = theme => ({
         opacity: 0.0,
         visibility: 'hidden',
         transition: 'opacity 500ms 0ms',
+    },
+    table: {
+        backgroundColor: 'grey'
     }
 });
 
 const signIn = () => {
     msalApp.loginRedirect(loginRequest);
-    /*.then((u) => {
-        console.log(u);
-    }).catch(error => {
-        console.error(error);
-    });*/
 };
 
 const App = (props) => {
     const classes = props.classes;
-    
+
     const [rootClass, setRootClass] = useState(classes.rootHidden);
     const [appClass, setAppClass] = useState(classes.rootHidden);
     const [app, setApp] = useState(classes.hidden);
     const [user, setUser] = useState(undefined);
-    const [value, setValue] = useState("Loading...");
+    const [value, setValue] = useState([]);
     const [photo, setPhoto] = useState(null);
 
     useEffect( () => {
         const accounts = msalApp.getAllAccounts();
-        console.log(accounts);
         msalApp.handleRedirectPromise().then((tokenResponse) => {
             if(!tokenResponse) {
                 if(window.sessionStorage.getItem("session")) {
@@ -153,11 +152,9 @@ const App = (props) => {
             }
             let profile = jwtDecode(tokenResponse.idToken);
             let access = jwtDecode(tokenResponse.accessToken);
-            console.log(profile);
-            console.log(access);
             setUser(profile);
         }).catch((error) => {
-            console.log(error);
+            console.error(error);
         });
     }, []);
 
@@ -189,15 +186,14 @@ const App = (props) => {
         setRootClass(classes.root);
         setAppClass(classes.shown);
       Axios.get("/api/budgets/").then( res => {
-        console.log(res.data);
-        setValue(res.data);
+        setValue(res.data);// convert to array
         setApp(true);
       }, err => {
         setValue("Error");
         setApp(true);
       })
     }, []);
-  
+
     return (
         <div className={rootClass}>
             {!app && <div>
@@ -224,7 +220,12 @@ const App = (props) => {
                                         <Switch>
                                             <Route exact path="/">
                                               <h1>Hello, {user.given_name}</h1> 
-                                              {JSON.stringify(value)}
+                                              <DataTable fields={[
+                                                            { name: 'Name of Club', dataKey: "Name of Club", width: 400 },
+                                                            { name: 'Fiscal Year', dataKey: "Fiscal Year", width: 100},
+                                                            ]} 
+                                                        data={value}
+                                                />
                                             </Route>
                                         </Switch>
                                     </Paper>
