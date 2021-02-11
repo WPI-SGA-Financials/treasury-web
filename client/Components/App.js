@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route,
+    useHistory,
 } from "react-router-dom";
 
 import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles';
@@ -232,17 +233,26 @@ const App = (props) => {
                                 {user && (
                                     <Paper className={classes.paper} elevation={3}>
                                         <Switch>
-                                            <Route exact path="/">
-                                              <h1>Hello, {user.given_name}</h1> 
-                                              <DataTable fields={[
-                                                            { name: 'Name of Club', dataKey: "Name of Club", width: 400 },
-                                                            { name: 'Fiscal Year', dataKey: "Fiscal Year", width: 100},
+                                            <Route exact path="/" component={
+                                                (props) => {
+                                                    const history = useHistory();
+                                                    return (
+                                                        <div>
+                                                            <h2>Hello, {user.given_name}! Select a club below.</h2> 
+                                                            <DataTable fields={[
+                                                                { name: 'Name of Club', dataKey: "Name of Club", label: "Club", width: 380 },
+                                                                { name: 'Fiscal Year', dataKey: "Fiscal Year", label: "Year", width: 130},
                                                             ]} 
-                                                        data={value}
-                                                        centered
-                                                        searchable
-                                                />
-                                            </Route>
+                                                            data={value}
+                                                            height={300}
+                                                            onRowClick={(row) => history.push(`/org/${row.rowData.ID}`)}
+                                                            centered
+                                                            searchable
+                                                            />
+                                                        </div>
+                                                    );
+                                                }
+                                            } />
                                         </Switch>
                                     </Paper>
                                 )}

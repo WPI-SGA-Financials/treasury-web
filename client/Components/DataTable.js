@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,14 +19,16 @@ const styles = (theme) => ({
     '& .ReactVirtualized__Table__headerRow': {
       flip: false,
       paddingRight: theme.direction === 'rtl' ? '0 !important' : undefined,
+      backgroundColor: "#303030",
     },
   },
   tableRow: {
     cursor: 'pointer',
+    backgroundColor: "#303030",
   },
   tableRowHover: {
     '&:hover': {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.grey[600],
     },
   },
   tableCell: {
@@ -68,9 +70,9 @@ class MuiVirtualizedTable extends React.PureComponent {
     );
   };
 
-  headerRenderer = ({ label, columnIndex }) => {
-    const { headerHeight, columns, classes } = this.props;
-
+  headerRenderer = ({ label, columnIndex}) => {
+    const { headerHeight, columns, classes, ...tableProps } = this.props;
+    const customHeaderChild = columns[columnIndex].customHeaderChild;
     return (
       <TableCell
         component="div"
@@ -79,7 +81,7 @@ class MuiVirtualizedTable extends React.PureComponent {
         style={{ height: headerHeight }}
         align={columns[columnIndex].numeric || false ? 'right' : 'left'}
       >
-        <span>{label}</span>
+        {customHeaderChild || <b>{label}</b>}
       </TableCell>
     );
   };
@@ -133,6 +135,7 @@ MuiVirtualizedTable.propTypes = {
       label: PropTypes.string.isRequired,
       numeric: PropTypes.bool,
       width: PropTypes.number.isRequired,
+      customHeaderChild: PropTypes.object,
     }),
   ).isRequired,
   headerHeight: PropTypes.number,
@@ -146,9 +149,12 @@ const DataTable = (props) => {
   let rows = props.data;
 
   const totalWidth = props.fields.reduce((f1, f2) => f1.width + f2.width);
-  let [filter, setFilter ] = useState("");
+  let [filter, setFilter ] = useState(props.fields.reduce((acc, f) => {
+    acc[f.dataKey] = "";
+    return acc;
+  }, {}));
 
-  let paperStyles = { height: 600, width: totalWidth };
+  let paperStyles = { height: 300, width: totalWidth };
   if(props.centered) {
     paperStyles['marginLeft'] = 'auto';
     paperStyles['marginRight'] = 'auto';
@@ -157,11 +163,11 @@ const DataTable = (props) => {
   if(filter) {
     const columnKeys = props.fields.map(f => f.dataKey);
     rows = rows.filter(row => {
-      let match = false;
+      let match = true;
       columnKeys.forEach(key => {
-        filter.split(' ').forEach(searchToken => {
-          if(row[key].includes(searchToken)) {
-            match = true;
+        filter[key].split(' ').forEach(searchToken => {
+          if(!row[key].includes(searchToken)) {
+            match = false;
           }
         });
       });
@@ -171,18 +177,31 @@ const DataTable = (props) => {
 
   return (
     <div>
-      {props.searchable &&
-        <TextField variant="outlined"
-        style={{width: totalWidth}}
-                  placeholder="Search"
-                  value={filter}
-                  onChange={evt => setFilter(evt.target.value)} />
-      }
       <Paper style={paperStyles}>
         <VirtualizedTable
           rowCount={rows.length}
           rowGetter={({ index }) => rows[index]}
-          columns={props.fields}
+          onRowClick={(row) => props.onRowClick(row)}
+          headerHeight={props.searchable ? 112 : 48}
+          columns={props.fields.map(col => {
+              return {
+                ...col,
+                customHeaderChild: props.searchable && <div>
+                    <br />
+                    <TextField variant="outlined"
+                               style={{width: 0.8 * col.width, height: 56}}
+                               placeholder={col.label}
+                               value={filter[col.dataKey]}
+                               onChange={evt => {
+                                 let newFilter = {...filter};
+                                 newFilter[col.dataKey] = evt.target.value;
+                                 console.log(filter[col.dataKey]);
+                                 console.log(newFilter);
+                                 setFilter(newFilter);
+                                }} />
+                  </div>
+              }
+          })}
           />
       </Paper>
     </div>
