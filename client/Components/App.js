@@ -234,12 +234,14 @@ const App = (props) => {
                                         <Switch>
                                             <Route exact path="/">
                                               <h1>Hello, {user.given_name}</h1> 
-                                              {/* <DataTable fields={[
+                                              <DataTable fields={[
                                                             { name: 'Name of Club', dataKey: "Name of Club", width: 400 },
                                                             { name: 'Fiscal Year', dataKey: "Fiscal Year", width: 100},
                                                             ]} 
                                                         data={value}
-                                                /> */}
+                                                        centered
+                                                        searchable
+                                                />
                                             </Route>
                                         </Switch>
                                     </Paper>

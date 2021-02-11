@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
+import { TextField } from '@material-ui/core';
 
 const styles = (theme) => ({
   flexContainer: {
@@ -142,15 +143,50 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const DataTable = (props) => {
-  const rows = props.data;
+  let rows = props.data;
+
+  const totalWidth = props.fields.reduce((f1, f2) => f1.width + f2.width);
+  let [filter, setFilter ] = useState("");
+
+  let paperStyles = { height: 600, width: totalWidth };
+  if(props.centered) {
+    paperStyles['marginLeft'] = 'auto';
+    paperStyles['marginRight'] = 'auto';
+  }
+
+  if(filter) {
+    const columnKeys = props.fields.map(f => f.dataKey);
+    rows = rows.filter(row => {
+      let match = false;
+      columnKeys.forEach(key => {
+        filter.split(' ').forEach(searchToken => {
+          if(row[key].includes(searchToken)) {
+            match = true;
+          }
+        });
+      });
+      return match;
+    });
+  }
 
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
-      <VirtualizedTable
-        rowCount={rows.length}
-        rowGetter={({ index }) => rows[index]}
-        columns={props.fields}
-      />
-    </Paper>
+    <div>
+      {props.searchable &&
+        <TextField variant="outlined"
+        style={{width: totalWidth}}
+                  placeholder="Search"
+                  value={filter}
+                  onChange={evt => setFilter(evt.target.value)} />
+      }
+      <Paper style={paperStyles}>
+        <VirtualizedTable
+          rowCount={rows.length}
+          rowGetter={({ index }) => rows[index]}
+          columns={props.fields}
+          />
+      </Paper>
+    </div>
   );
 };
+
+export default withStyles(styles)(DataTable);
