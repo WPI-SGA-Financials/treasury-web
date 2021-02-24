@@ -141,8 +141,8 @@ const Header = (props) => {
                             </b>
                         </Typography>
                     </div>                        
-                    {/* <Typography variant="h5" align="right" color="inherit"> */}
                     <img style={{height: 60, flexAlign: 'right', marginRight: '2.5vw'}} src={wpiLogo} />
+                    {/* <Typography variant="h5" align="right" color="inherit"> */}
                     {/* </Typography> */}
                     {/* <HelpDialog
                         show={showHelp}

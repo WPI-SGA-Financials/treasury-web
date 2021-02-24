@@ -154,7 +154,12 @@ const DataTable = (props) => {
     return acc;
   }, {}));
 
-  let paperStyles = { height: 300, width: totalWidth };
+  let paperStyles = { 
+    height: 300, 
+    width: totalWidth, 
+    maxWidth: props.maxWidth || undefined, 
+    overflowX: 'scroll' 
+  };
   if(props.centered) {
     paperStyles['marginLeft'] = 'auto';
     paperStyles['marginRight'] = 'auto';
@@ -188,7 +193,7 @@ const DataTable = (props) => {
                 ...col,
                 customHeaderChild: props.searchable && <div>
                     <br />
-                    <label>{col.label}</label>
+                    <b>{col.label}</b>
                     <br />
                     <TextField variant="outlined"
                                style={{maxWidth: 0.8 * col.width, height: 56, margin: 0, padding: 0}}

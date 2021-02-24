@@ -7,15 +7,15 @@ import {
     useHistory,
 } from "react-router-dom";
 
-import { createMuiTheme, MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { createMuiTheme, MuiThemeProvider, withStyles, responsiveFontSizes } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, ButtonGroup, CircularProgress, Typography } from '@material-ui/core';
 import Paper from "@material-ui/core/Paper";
 
 import Header from './Header';
 
-import { ArrowUpwardSharp } from '@material-ui/icons';
+import { ArrowUpwardSharp, AssessmentRounded, GroupWorkRounded, SpeakerNotes } from '@material-ui/icons';
 
 import { PublicClientApplication } from '@azure/msal-browser';
 import jwtDecode from 'jwt-decode';
@@ -73,10 +73,21 @@ const loginRequest = {
     }
 };
 
-const theme = createMuiTheme({
+const theme = responsiveFontSizes(createMuiTheme({
     typography: {
-        useNextVariants: true,
-    },
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+          ].join(','),
+        },
     palette: {
         type: 'dark',
         primary: {
@@ -86,7 +97,7 @@ const theme = createMuiTheme({
             main: '#751019',
         },
     },
-});
+}));
 
 
 const styles = theme => ({
@@ -145,7 +156,7 @@ const App = (props) => {
 
     const [rootClass, setRootClass] = useState(classes.rootHidden);
     const [appClass, setAppClass] = useState(classes.rootHidden);
-    const [app, setApp] = useState(classes.hidden);
+    const [app, setApp] = useState(false);
     const [user, setUser] = useState(undefined);
     const [value, setValue] = useState([]);
     const [photo, setPhoto] = useState(null);
@@ -199,13 +210,13 @@ const App = (props) => {
     useEffect( () => {
         setRootClass(classes.root);
         setAppClass(classes.shown);
-      Axios.get("/api/budgets/").then( res => {
-        setValue(res.data);// convert to array
-        setApp(true);
-      }, err => {
-        setValue("Error");
-        setApp(true);
-      })
+        Axios.get("/api/budgets/").then( res => {
+            setValue(res.data);// convert to array
+            setApp(true);
+        }, err => {
+            setValue("Error");
+            setApp(true);
+        })
     }, []);
 
     return (
@@ -244,10 +255,29 @@ const App = (props) => {
                                                     );
                                                     return (
                                                         <div>
-                                                            <h2>Hello, {user.given_name}! Select a club below.</h2> 
+                                                            <ButtonGroup color="primary"
+                                                                         variant="contained"
+                                                                         styles={{marginBottom: 15}}>
+
+                                                                <Button color="secondary"
+                                                                        onClick={() => history.push("/")} 
+                                                                        startIcon={<GroupWorkRounded />}>
+                                                                    Organizations
+                                                                </Button>                                                            
+                                                                <Button onClick={() => history.push("/minutes")} 
+                                                                        startIcon={<SpeakerNotes />}>
+                                                                    SGA Minutes
+                                                                </Button>                                                            
+                                                                <Button onClick={() => history.push("/sga")} 
+                                                                        startIcon={<AssessmentRounded />}>
+                                                                    SGA Finanical Report
+                                                                </Button>                                                            
+                                                            </ButtonGroup>
+                                                            {/* <h2>Hello, {user.given_name}! Select a club below.</h2>  */}
                                                             <DataTable fields={[
                                                                 { name: 'club', dataKey: "club", label: "Club", width: 500 }
                                                             ]} 
+                                                            maxWidth={'80vw'}
                                                             data={uniqueClubs.map(c => ({'club': c}) )}
                                                             height={300}
                                                             onRowClick={(row) => history.push(`/org/${row.rowData.club}`)}
@@ -260,6 +290,52 @@ const App = (props) => {
                                             } />
                                             <Route path="/org/:org" component={(props) => 
                                                     <OrgView budgets={value} {...props} />} />
+                                            <Route exact path="/minutes" component={(props) => {
+                                                const history = useHistory();
+                                                return (
+                                                    <ButtonGroup color="primary"
+                                                                 variant="contained"
+                                                                 styles={{marginBottom: 15}}>
+
+                                                        <Button onClick={() => history.push("/")} 
+                                                                startIcon={<GroupWorkRounded />}>
+                                                            Organizations
+                                                        </Button>                                                            
+                                                        <Button color="secondary"
+                                                                onClick={() => history.push("/minutes")} 
+                                                                startIcon={<SpeakerNotes />}>
+                                                            SGA Minutes
+                                                        </Button>                                                            
+                                                        <Button onClick={() => history.push("/sga")} 
+                                                                startIcon={<AssessmentRounded />}>
+                                                            SGA Finanical Report
+                                                        </Button>                                                            
+                                                    </ButtonGroup>
+                                                )} 
+                                            } />
+                                            <Route exact path="/sga" component={(props) => {
+                                                const history = useHistory();
+                                                return (
+                                                    <ButtonGroup color="primary"
+                                                                 variant="contained"
+                                                                 styles={{marginBottom: 15}}>
+
+                                                        <Button onClick={() => history.push("/")} 
+                                                                startIcon={<GroupWorkRounded />}>
+                                                            Organizations
+                                                        </Button>                                                            
+                                                        <Button onClick={() => history.push("/minutes")} 
+                                                                startIcon={<SpeakerNotes />}>
+                                                            SGA Minutes
+                                                        </Button>                                                            
+                                                        <Button color="secondary"
+                                                                onClick={() => history.push("/sga")} 
+                                                                startIcon={<AssessmentRounded />}>
+                                                            SGA Finanical Report
+                                                        </Button>                                                            
+                                                    </ButtonGroup>
+                                                )} 
+                                            } />
                                         </Switch>
                                     </Paper>
                                 )}
