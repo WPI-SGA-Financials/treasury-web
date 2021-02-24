@@ -24,6 +24,7 @@ import FilterableTable from 'react-filterable-table';
 import DataTable from "./DataTable";
 
 import appLogo from '../Assets/treasury-logo.png';
+import OrgView from "./OrgView";
 
  
 const msalApp = new PublicClientApplication({
@@ -234,18 +235,22 @@ const App = (props) => {
                                     <Paper className={classes.paper} elevation={3}>
                                         <Switch>
                                             <Route exact path="/" component={
-                                                (props) => {
+                                                () => {
                                                     const history = useHistory();
+                                                    const uniqueClubs = value.map(x => x["Name of Club"]).filter(
+                                                        (x, i, self) => {
+                                                            return self.indexOf(x) === i;
+                                                        }
+                                                    );
                                                     return (
                                                         <div>
                                                             <h2>Hello, {user.given_name}! Select a club below.</h2> 
                                                             <DataTable fields={[
-                                                                { name: 'Name of Club', dataKey: "Name of Club", label: "Club", width: 380 },
-                                                                { name: 'Fiscal Year', dataKey: "Fiscal Year", label: "Year", width: 130},
+                                                                { name: 'club', dataKey: "club", label: "Club", width: 500 }
                                                             ]} 
-                                                            data={value}
+                                                            data={uniqueClubs.map(c => ({'club': c}) )}
                                                             height={300}
-                                                            onRowClick={(row) => history.push(`/org/${row.rowData.ID}`)}
+                                                            onRowClick={(row) => history.push(`/org/${row.rowData.club}`)}
                                                             centered
                                                             searchable
                                                             />
@@ -253,6 +258,8 @@ const App = (props) => {
                                                     );
                                                 }
                                             } />
+                                            <Route path="/org/:org" component={(props) => 
+                                                    <OrgView budgets={value} {...props} />} />
                                         </Switch>
                                     </Paper>
                                 )}

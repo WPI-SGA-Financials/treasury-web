@@ -148,7 +148,7 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 const DataTable = (props) => {
   let rows = props.data;
 
-  const totalWidth = props.fields.reduce((f1, f2) => f1.width + f2.width);
+  const totalWidth = props.fields.reduce((f1, f2) => f1.width + f2.width, {width: 0});
   let [filter, setFilter ] = useState(props.fields.reduce((acc, f) => {
     acc[f.dataKey] = "";
     return acc;
@@ -166,7 +166,7 @@ const DataTable = (props) => {
       let match = true;
       columnKeys.forEach(key => {
         filter[key].split(' ').forEach(searchToken => {
-          if(!row[key].includes(searchToken)) {
+          if(!(""+row[key]).toLowerCase().includes(searchToken.toLowerCase())) {
             match = false;
           }
         });
@@ -188,8 +188,10 @@ const DataTable = (props) => {
                 ...col,
                 customHeaderChild: props.searchable && <div>
                     <br />
+                    <label>{col.label}</label>
+                    <br />
                     <TextField variant="outlined"
-                               style={{width: 0.8 * col.width, height: 56}}
+                               style={{maxWidth: 0.8 * col.width, height: 56, margin: 0, padding: 0}}
                                placeholder={col.label}
                                value={filter[col.dataKey]}
                                onChange={evt => {
