@@ -28,17 +28,17 @@ const OrgView = (props) => {
 
 
     useEffect( () => {
-      let rp = Axios.get(`/api/reallocations/?Name of Club=${org}`).then( res => {
+      let rp = Axios.get(`/api/reallocations/?Name of Club=${encodeURIComponent(org)}`).then( res => {
         setRealloc(res.data);// convert to array
       }, err => {
         setRealloc("Error");
       })
-      let fp = Axios.get(`/api/fundingrequests/?Name of Club=${org}`).then( res => {
+      let fp = Axios.get(`/api/fundingrequests/?Name of Club=${encodeURIComponent(org)}`).then( res => {
         setFr(res.data);// convert to array
       }, err => {
         setFr("Error");
       })
-      let bsp = Axios.get(`/api/budgetsections/?Name of Club=${org}`).then( res => {
+      let bsp = Axios.get(`/api/budgetsections/?Name of Club=${encodeURIComponent(org)}`).then( res => {
         setBs(res.data);// convert to array
       }, err => {
         setBs("Error");

@@ -202,8 +202,9 @@ const App = (props) => {
             setPhoto(blobUrl);
         }).catch(err => {
             console.error("Failed to get user photo");
-            window.sessionStorage.removeItem("session");
-            window.location.reload();
+            //TODO Validate token, some users don't have pfp so this won't work
+            // window.sessionStorage.removeItem("session");
+            // window.location.reload();
         })
     }, [user]);
 
