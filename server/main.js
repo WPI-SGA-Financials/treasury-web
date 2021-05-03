@@ -27,10 +27,37 @@ const PORT = process.env.PORT || 8000;
 // REST API
 app.use('/api', require('./api'));
 
-//TODO: oauth
-
 // Serve frontend
-// app.use("/", express.static("dist"));
+let staticHandler = express.static("dist");
+
+if(process.env.IS_DEV) {
+    console.log("Starting Parcel dev server...")
+    // If dev, use Parcel for HMR
+    const Bundler = require('parcel-bundler');
+    const bundler = new Bundler('client/index.html', {
+        hmr: false, // HMR does not work with HTTPS (thanks, MSAL)
+    });
+    staticHandler = bundler.middleware();
+
+    // We need a localtunnel for SSO to work, since MSAL uses PKCE which doesn't work via localhost
+    console.log("Starting dev https tunnel...")
+    const localtunnel = require('localtunnel');
+
+    (async () => {
+      const tunnel = await localtunnel({ 
+          port: PORT, 
+          subdomain: process.env.LT_SUB || undefined 
+        });
+
+      console.log("\nLocaltunnel active at URL: " + tunnel.url);
+
+      tunnel.on('close', () => {
+        console.log("https tunnel closed")
+      });
+    })();
+}
+
+app.use("/", staticHandler);
 
 // Start the server
 app.listen(PORT, () => {

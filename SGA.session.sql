@@ -1,0 +1,1 @@
+SELECT FRMinutes.*,`Funding Requests`.`Dot Number` form FRMinutes LEFT JOIN `Funding Requests` ON FRMinutes.FR_ID=`Funding Requests`.`id`;

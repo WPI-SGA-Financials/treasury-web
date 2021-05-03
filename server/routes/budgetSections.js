@@ -32,7 +32,7 @@ var router = require('express').Router()
  *         description: bad input parameter
  */
 router.get('/', (req, res) => {
-    var sqlQuery = 'SELECT * FROM `Budget By FY`'
+    var sqlQuery = 'SELECT * FROM `Budget By Section`'
     var content
 
     // Check for query
