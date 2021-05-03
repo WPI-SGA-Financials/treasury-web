@@ -22,7 +22,7 @@ const MinutesView = (props) => {
         }, err => {
           setMinutes("Error");
         })
-    });
+    }, []);
 
     return (
         <div>
