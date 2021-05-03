@@ -34,7 +34,7 @@ const MinutesView = (props) => {
                 { name: 'Agenda Number', dataKey: "Agenda Number", label: "Agenda Number", width: 200 },
                 // { name: 'FR_ID', dataKey: "FR_ID", label: "FR_ID", width: 100 },
                 // { name: 'RR_ID', dataKey: "RR_ID", label: "RR_ID", width: 100 },
-                { name: 'Dot Number', dataKey: "Dot Number", label: "Dot Number", width: 100 },
+                { name: 'Dot Number', dataKey: "Dot Number", label: "Dot Number", width: 200 },
                 { name: 'Minutes Link', dataKey: "Minutes Link", label: "Minutes Link", width: 500 },
             ]} 
             maxWidth={'80vw'}
