@@ -25,6 +25,7 @@ import DataTable from "./DataTable";
 
 import appLogo from '../Assets/treasury-logo.png';
 import OrgView from "./OrgView";
+import MinutesView from "./MinutesView";
 
  
 const msalApp = new PublicClientApplication({
@@ -294,47 +295,53 @@ const App = (props) => {
                                             <Route exact path="/minutes" component={(props) => {
                                                 const history = useHistory();
                                                 return (
-                                                    <ButtonGroup color="primary"
-                                                                 variant="contained"
-                                                                 styles={{marginBottom: 15}}>
+                                                    <div>
+                                                        <ButtonGroup color="primary"
+                                                                    variant="contained"
+                                                                    styles={{marginBottom: 15}}>
 
-                                                        <Button onClick={() => history.push("/")} 
-                                                                startIcon={<GroupWorkRounded />}>
-                                                            Organizations
-                                                        </Button>                                                            
-                                                        <Button color="secondary"
-                                                                onClick={() => history.push("/minutes")} 
-                                                                startIcon={<SpeakerNotes />}>
-                                                            SGA Minutes
-                                                        </Button>                                                            
-                                                        <Button onClick={() => history.push("/sga")} 
-                                                                startIcon={<AssessmentRounded />}>
-                                                            SGA Finanical Report
-                                                        </Button>                                                            
-                                                    </ButtonGroup>
+                                                            <Button onClick={() => history.push("/")} 
+                                                                    startIcon={<GroupWorkRounded />}>
+                                                                Organizations
+                                                            </Button>                                                            
+                                                            <Button color="secondary"
+                                                                    onClick={() => history.push("/minutes")} 
+                                                                    startIcon={<SpeakerNotes />}>
+                                                                SGA Minutes
+                                                            </Button>                                                            
+                                                            <Button onClick={() => history.push("/sga")} 
+                                                                    startIcon={<AssessmentRounded />}>
+                                                                SGA Finanical Report
+                                                            </Button>                                                            
+                                                        </ButtonGroup>
+                                                        <MinutesView {...props} />
+                                                    </div>
                                                 )} 
                                             } />
                                             <Route exact path="/sga" component={(props) => {
                                                 const history = useHistory();
                                                 return (
-                                                    <ButtonGroup color="primary"
-                                                                 variant="contained"
-                                                                 styles={{marginBottom: 15}}>
+                                                    <div>
+                                                        <ButtonGroup color="primary"
+                                                                    variant="contained"
+                                                                    styles={{marginBottom: 15}}>
 
-                                                        <Button onClick={() => history.push("/")} 
-                                                                startIcon={<GroupWorkRounded />}>
-                                                            Organizations
-                                                        </Button>                                                            
-                                                        <Button onClick={() => history.push("/minutes")} 
-                                                                startIcon={<SpeakerNotes />}>
-                                                            SGA Minutes
-                                                        </Button>                                                            
-                                                        <Button color="secondary"
-                                                                onClick={() => history.push("/sga")} 
-                                                                startIcon={<AssessmentRounded />}>
-                                                            SGA Finanical Report
-                                                        </Button>                                                            
-                                                    </ButtonGroup>
+                                                            <Button onClick={() => history.push("/")} 
+                                                                    startIcon={<GroupWorkRounded />}>
+                                                                Organizations
+                                                            </Button>                                                            
+                                                            <Button onClick={() => history.push("/minutes")} 
+                                                                    startIcon={<SpeakerNotes />}>
+                                                                SGA Minutes
+                                                            </Button>                                                            
+                                                            <Button color="secondary"
+                                                                    onClick={() => history.push("/sga")} 
+                                                                    startIcon={<AssessmentRounded />}>
+                                                                SGA Finanical Report
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                        <iframe src="https://sgaviz.cs.wpi.edu" style={{height: '80vh', width: "100%"}} />
+                                                    </div>
                                                 )} 
                                             } />
                                         </Switch>

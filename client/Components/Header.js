@@ -1,7 +1,7 @@
-import { AppBar, Avatar, BottomNavigation, BottomNavigationAction, Button, Divider, Drawer, List, ListItem, ListItemText, ListSubheader, Tab, Tabs } from '@material-ui/core';
+import { AppBar, Avatar, BottomNavigation, BottomNavigationAction, Button, Dialog, DialogContentText, DialogTitle, Divider, Drawer, IconButton, List, ListItem, ListItemText, ListSubheader, Tab, Tabs } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { CloseSharp, CloudUploadRounded, Edit, InfoRounded, LibraryBooks, TouchApp, Visibility, SettingsRounded } from '@material-ui/icons';
+import { CloseSharp, CloudUploadRounded, Edit, InfoRounded, LibraryBooks, TouchApp, Visibility, SettingsRounded, Close } from '@material-ui/icons';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Helpicon from '@material-ui/icons/Help';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
@@ -148,6 +148,17 @@ const Header = (props) => {
                         show={showHelp}
                         toggle={() => {setShowHelp(!showHelp)}}/> */}
                 </Toolbar>
+                <Dialog style={{padding: 30, height: '80vh'}} onClose={() => {setShowHelp(false)}} aria-labelledby="help-dialog" open={showHelp}>
+                    <div style={{padding: 30}}>
+                        <IconButton style={{width: 50, position: 'absolute', right: 30}} aria-label="close" onClick={() => setShowHelp(false)}>
+                            <Close />
+                        </IconButton>
+                        <DialogContentText><b>Treasury Web</b></DialogContentText>
+                        <DialogContentText>Created by Mikel Matticoli and Sam Talpey as part of a Major Qualifying Project at Worcester Polytechnic Institute.</DialogContentText>
+                        <DialogContentText>If you have questions relating to financial data, please contact SGA Financial Board.</DialogContentText>
+                        <DialogContentText>If you have encountered a bug in Treasury Web, you can file a bug report by creating an issue <a href="https://github.com/WPI-SGA-Financials/treasury-web/issues">here</a></DialogContentText>
+                    </div>
+                </Dialog>
                 {/* <Tabs   centered
                         style={{visibility: (user && user.authorized) ? 'visible' : 'collapse'}}
                         value={appView} 
